@@ -1,0 +1,33 @@
+<div mat-dialog-content style="padding-top: 0.5rem; padding-bottom: 0.5rem">
+  <form [formGroup]="form">
+    <mat-form-field appearance="outline" *ngIf="data.action === 'park'">
+      <mat-label>Select Entry Point</mat-label>
+      <mat-select formControlName="entrypoint">
+        <mat-option value="A">A</mat-option>
+        <mat-option value="B">B</mat-option>
+        <mat-option value="C">C</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Plate Number</mat-label>
+      <input
+        matInput
+        placeholder="Plate Number"
+        formControlName="platenumber"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline" *ngIf="data.action === 'park'">
+      <mat-label>Vehicle Type</mat-label>
+      <mat-select formControlName="vehicleType">
+        <mat-option value="SM">Small</mat-option>
+        <mat-option value="MP">Medium</mat-option>
+        <mat-option value="LP">Large</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+  <div [align]="'center'">
+    <button (click)="close()" [disabled]="!form.valid" mat-raised-button>
+      {{ data.action === "park" ? "Park" : "Unpark" }}
+    </button>
+  </div>
+</div>
