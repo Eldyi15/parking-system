@@ -19,10 +19,10 @@ export class AppComponent {
     platenumber: new FormControl('', [Validators.required]),
   });
   ngOnInit() {
-    this.parking_space = JSON.parse(
-      JSON.stringify(localStorage.getItem('parking_space'))
-    );
-    // this.parking_space = PARKING_SPACE;
+    // this.parking_space = JSON.parse(
+    //   JSON.stringify(localStorage.getItem('parking_space'))
+    // );
+    this.parking_space = PARKING_SPACE;
 
     if (!this.parking_space) {
       this.parking_space = PARKING_SPACE;
@@ -187,9 +187,6 @@ export class AppComponent {
     // localStorage.setItem('parking_space', JSON.stringify(this.parking_space));
   }
   unParkVehicle(data: any) {
-    // console.log(data);
-
-    let rate = 30;
     let charged: any = {};
     this.parking_space.forEach((section: any) => {
       section.parking_area.forEach((slot: any) => {
@@ -199,11 +196,14 @@ export class AppComponent {
           slot.plate_number &&
           slot.plate_number.toLowerCase() === data.platenumber.toLowerCase()
         ) {
+          charged = this.computeParkingHours(slot);
+          this.dialog.open(ReceiptComponent, {
+            data: charged,
+            height: '40vh',
+            width: '30vw',
+          });
           slot.status = 'unoccupied';
           delete slot.plate_number;
-
-          charged = this.computeParkingHours(slot);
-          this.dialog.open(ReceiptComponent);
 
           localStorage.setItem(
             'parking_space',
@@ -220,21 +220,36 @@ export class AppComponent {
 
   computeParkingHours(parkingDetails: any) {
     let startDate = new Date(parkingDetails.parkStart);
-    let endDate = new Date('Jan 6,2023 14:00:00');
+    let endDate = new Date();
     let excessHours = Math.round(
       (endDate.getTime() - startDate.getTime()) / 1000 / 3600
     );
-    console.log(excessHours);
-    let multiplier = excessHours > 3 ? excessHours - 3 : 1;
+    // console.log(excessHours);
+    let multiplier =
+      excessHours > 3 && excessHours < 24
+        ? excessHours - 3
+        : excessHours === 24
+        ? 1
+        : excessHours > 24
+        ? excessHours - 24
+        : 1;
+
+    // console.log(multiplier);
     let rate =
-      excessHours > 3
+      excessHours > 3 && excessHours < 24
         ? parkingDetails.rate + parkingDetails.rate * multiplier
-        : parkingDetails.rate * multiplier;
-    console.log(rate);
+        : excessHours === 24
+        ? 5000 * multiplier
+        : excessHours > 24
+        ? 5000 + parkingDetails.rate * multiplier
+        : parkingDetails.rate;
+
+    console.log(parkingDetails);
 
     return {
       plate_number: parkingDetails.plate_number,
-      price: '',
+      price: rate,
+      rate: parkingDetails.rate,
       parkingStart: startDate,
       parkingEnd: endDate,
       excessHours,

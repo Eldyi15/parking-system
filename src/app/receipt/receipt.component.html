@@ -1,1 +1,30 @@
-<p>receipt works!</p>
+<div
+  align="center"
+  style="display: flex; justify-content: center; align-items: center"
+  mat-dialog-content
+>
+  <div>
+    <h2>Plate Number: {{ data.plate_number }}</h2>
+    <p style="font-size: 24px">₱ {{ data.price.toFixed(2) }}</p>
+    <div
+      style="
+        border-top: dashed 1px rgb(206, 206, 206);
+        display: grid;
+        grid-template-columns: 50% 50%;
+        padding-top: 0.5rem;
+      "
+    >
+      <p>Flat Rate:</p>
+      <p>₱ {{ data.rate.toFixed(2) }}</p>
+      <p>In:</p>
+      <p>{{ data.parkingStart | date : "medium" }}</p>
+      <p>Out:</p>
+      <p>{{ data.parkingEnd | date : "medium" }}</p>
+      <p>Excess Hours</p>
+      <p>{{ data.excessHours }}</p>
+    </div>
+  </div>
+</div>
+<div align="center" mat-dialog-actions>
+  <button mat-raised-button (click)="diagRef.close()">Okay</button>
+</div>
