@@ -21,7 +21,9 @@ export class ParkUnparkDialogComponent implements OnInit {
   ngOnInit(): void {
     if (this.data.action === 'park') {
       this.form.controls['entrypoint'].setValidators(Validators.required);
-      this.form.controls['entrypoint'].updateValueAndValidity();
+      this.form.controls['vehicleType'].setValidators(Validators.required);
+
+      this.form.updateValueAndValidity();
     }
   }
   close() {

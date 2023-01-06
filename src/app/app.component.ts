@@ -46,9 +46,11 @@ export class AppComponent {
       })
       .afterClosed()
       .subscribe((res: any) => {
-        if (action === 'park') {
-          this.parkVehicle(res);
-        } else this.unParkVehicle(res);
+        if (res) {
+          if (action === 'park') {
+            this.parkVehicle(res);
+          } else this.unParkVehicle(res);
+        }
       });
   }
 
