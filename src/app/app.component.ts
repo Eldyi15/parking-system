@@ -19,10 +19,10 @@ export class AppComponent {
     platenumber: new FormControl('', [Validators.required]),
   });
   ngOnInit() {
-    // this.parking_space = JSON.parse(
-    //   JSON.stringify(localStorage.getItem('parking_space'))
-    // );
-    this.parking_space = PARKING_SPACE;
+    this.parking_space = JSON.parse(
+      JSON.stringify(localStorage.getItem('parking_space'))
+    );
+    // this.parking_space = PARKING_SPACE;
 
     if (!this.parking_space) {
       this.parking_space = PARKING_SPACE;
@@ -230,23 +230,24 @@ export class AppComponent {
     let multiplier =
       excessHours > 3 && excessHours < 24
         ? excessHours - 3
-        : excessHours === 24
-        ? 1
-        : excessHours > 24
-        ? excessHours - 24
+        : excessHours >= 24
+        ? excessHours % 24 === 0
+          ? (excessHours % 24) / 24
+          : excessHours % 24
         : 1;
 
-    // console.log(multiplier);
+    console.log(multiplier);
     let rate =
       excessHours > 3 && excessHours < 24
         ? parkingDetails.rate + parkingDetails.rate * multiplier
-        : excessHours === 24
-        ? 5000 * multiplier
-        : excessHours > 24
-        ? 5000 + parkingDetails.rate * multiplier
+        : excessHours >= 24
+        ? excessHours % 24 === 0
+          ? 5000 * ((excessHours % 24) / 24)
+          : 5000 * Math.floor(excessHours / 24) +
+            parkingDetails.rate * multiplier
         : parkingDetails.rate;
 
-    console.log(parkingDetails);
+    console.log(rate);
 
     return {
       plate_number: parkingDetails.plate_number,
